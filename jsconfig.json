@@ -2,21 +2,9 @@
     "compilerOptions": {
         "baseUrl": ".",
         "paths": {
-            "@pages/*": [
-                "pages/*"
-            ],
-            "@contractConstants/*": [
-                "contracts_constants/*"
-            ],
-            "@components/*": [
-                "components/*"
-            ],
-            "@styles/*": [
-                "styles/*"
-            ],
-            "@content/*": [
-                "content/*"
-            ]
+            "@pages/*": ["pages/*"],
+            "@components/*": ["components/*"],
+            "@styles/*": ["styles/*"]
         }
     }
 }

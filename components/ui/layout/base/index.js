@@ -7,10 +7,12 @@ export default function BaseLayout({ children }) {
     return (
         <div className="relative max-w-7xl mx-auto px-4">
             <NavbarComponent />
-            {web3Context && web3Context.isWeb3Enabled == true && !web3Context.isChainSupported ? (
+            {web3Context &&
+            web3Context.isWeb3Enabled == true &&
+            !web3Context.isChainSupported ? (
                 <div className="mt-5 flex flex-col items-center bg-red-400 p-4 rounded-lg ">
                     <div className="text-sm text-primary-2 font-bold">
-                        Wrong network, please use Goerli testnet
+                        Wrong network, please use Rinkeby testnet
                     </div>
                 </div>
             ) : (

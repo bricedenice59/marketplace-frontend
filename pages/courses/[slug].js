@@ -3,7 +3,7 @@ import {
     CourseKeypointsComponent,
     CourseLecturesComponent,
 } from "@components/ui/course";
-const { getAllCourses } = require("@content/courses/fetcher");
+const { getAllCourses } = require("content/courses/fetcher");
 import { BaseLayout } from "@components/ui/layout";
 import Web3Context from "store/contract-context";
 import { useContext } from "react";
@@ -40,7 +40,11 @@ export default function Course() {
     if (res.fetching)
         return <div className="text-center my-28 text-2xl text-blue-900">Loading...</div>;
     if (res.error)
-        return <div className="text-center my-28 text-2xl text-blue-900">{res.error.message}</div>;
+        return (
+            <div className="text-center my-28 text-2xl text-blue-900">
+                {res.error.message}
+            </div>
+        );
     if (!res.data)
         return (
             <div className="text-center my-28 text-2xl text-blue-900">

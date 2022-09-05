@@ -30,21 +30,38 @@ export default function Home() {
     const web3Context = useContext(Web3Context.Web3Context);
     const { account } = useMoralis();
 
+    if (!web3Context || !web3Context?.isWeb3Enabled) {
+        return (
+            <div className="my-28 text-2xl text-center text-blue-900">
+                Please connect an account...
+            </div>
+        );
+    }
+
     const query = wformat(allCoursesPublishedQuery, { connectedAccount: `${account}` });
     const [res] = useQuery({ query: query, requestPolicy: "cache-and-network" });
 
     if (res.fetching)
         return <div className="text-center my-28 text-2xl text-blue-900">Loading...</div>;
     if (res.error)
-        return <div className="text-center my-28 text-2xl text-blue-900">{res.error.message}</div>;
+        return (
+            <div className="text-center my-28 text-2xl text-blue-900">
+                {res.error.message}
+            </div>
+        );
 
     if (!res.data || res.data.courseItems.length == 0)
-        return <div className="text-center my-28 text-2xl text-blue-900">Marketplace empty :)</div>;
+        return (
+            <div className="text-center my-28 text-2xl text-blue-900">
+                Marketplace empty :)
+            </div>
+        );
 
     var listCourses = [];
     res.data.courseItems.forEach((x) => {
         var blacklisted = false;
-        blacklisted = x.author.blacklistedStatus != null && x.author.blacklistedStatus.isFrozen;
+        blacklisted =
+            x.author.blacklistedStatus != null && x.author.blacklistedStatus.isFrozen;
         if (!blacklisted) {
             listCourses.push(x);
         }
@@ -53,32 +70,26 @@ export default function Home() {
     return (
         <div>
             <HeroComponent />
-            {web3Context && web3Context.isWeb3Enabled ? (
-                web3Context.isChainSupported ? (
-                    <div className="py-10">
-                        <section className="grid grid-cols-2 gap-6 mb-5">
-                            {listCourses.map((_, i) => (
-                                <div key={i}>
-                                    <div>{listCourses[i].id}</div>
-                                    <div className="bg-white rounded-xl shadow-md overflow-hidden md:max-w-3xl">
-                                        <CourseListComponent
-                                            courseId={listCourses[i].id}
-                                            status={null}
-                                            shouldDisplayStatus={false}
-                                            shouldDisplayPrice={true}
-                                        ></CourseListComponent>
-                                    </div>
+            {web3Context.isChainSupported ? (
+                <div className="py-10">
+                    <section className="grid grid-cols-2 gap-6 mb-5">
+                        {listCourses.map((_, i) => (
+                            <div key={i}>
+                                <div>{listCourses[i].id}</div>
+                                <div className="bg-white rounded-xl shadow-md overflow-hidden md:max-w-3xl">
+                                    <CourseListComponent
+                                        courseId={listCourses[i].id}
+                                        status={null}
+                                        shouldDisplayStatus={false}
+                                        shouldDisplayPrice={true}
+                                    ></CourseListComponent>
                                 </div>
-                            ))}
-                        </section>
-                    </div>
-                ) : (
-                    <div></div>
-                )
-            ) : (
-                <div className="my-28 text-2xl text-center  text-blue-900">
-                    Please connect an account...
+                            </div>
+                        ))}
+                    </section>
                 </div>
+            ) : (
+                <div></div>
             )}
         </div>
     );

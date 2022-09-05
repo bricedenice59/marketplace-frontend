@@ -1,4 +1,4 @@
-const { getAllCourses } = require("@content/courses/fetcher");
+const { getAllCourses } = require("content/courses/fetcher");
 import { CourseStatusComponent } from "@components/ui/course/index";
 import { EthPriceDisplayComponent } from "@components/ui/web3/index";
 import Link from "next/link";

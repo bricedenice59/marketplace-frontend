@@ -5,9 +5,15 @@ import EthPriceContextProvider from "store/price-change-context";
 import { Provider } from "urql";
 import { marketplaceTheGraphClient } from "store/graphql-context";
 import "@styles/globals.css";
+const { setDbConfig } = require("marketplace-shared/lib/database/harperDbUtils");
 
 function MyApp({ Component, pageProps }) {
     const Layout = Component.Layout;
+
+    setDbConfig(
+        process.env.NEXT_PUBLIC_HARPERDB_CLOUD_ENPOINT,
+        process.env.NEXT_PUBLIC_HARPERDB_AUTH_KEY
+    );
     return (
         <>
             <MoralisProvider initializeOnMount={false}>

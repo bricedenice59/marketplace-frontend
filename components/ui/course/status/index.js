@@ -33,11 +33,13 @@ export default function CourseStatusComponent({ courseId, statusParam }) {
     const activateDeactivateCourse = async () => {
         var tx;
         var gasPrice;
-        if (!web3Context.contracts.marketplaceContract || !web3Context.provider) return;
+        console.log(web3Context.contracts);
+        if (!web3Context.contracts.marketplaceContract) return;
         const contract = web3Context.contracts.marketplaceContract;
         setIsProcessing(true);
         try {
-            gasPrice = await web3Context.provider.getGasPrice();
+            gasPrice =
+                await web3Context.contracts.marketplaceContract.provider.getGasPrice();
         } catch (error) {
             console.log(error);
         }
