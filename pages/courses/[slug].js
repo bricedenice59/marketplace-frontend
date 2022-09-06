@@ -3,16 +3,14 @@ import {
     CourseKeypointsComponent,
     CourseLecturesComponent,
 } from "@components/ui/course";
-const { getAllCourses } = require("content/courses/fetcher");
 import { BaseLayout } from "@components/ui/layout";
 import Web3Context from "store/contract-context";
+import { retrieveData } from "store/course-context";
 import { useContext } from "react";
 import { useMoralis } from "react-moralis";
 import { useRouter } from "next/router";
 import { useQuery } from "urql";
 import { wformat } from "utils/stringutils";
-
-const allCourses = getAllCourses().data;
 
 const GET_PURCHASE_STATUS_COURSE_QUERY = `
     query getPurchaseStatus{
@@ -27,9 +25,17 @@ export default function Course() {
     const { account } = useMoralis();
     const router = useRouter();
 
-    const thisCourse = allCourses.find((o) => o.id === router.query.id);
+    if (!web3Context || !web3Context?.isWeb3Enabled) {
+        return (
+            <div className="my-28 text-2xl text-center text-blue-900">
+                Please connect an account...
+            </div>
+        );
+    }
+
+    const thisCourse = JSON.parse(retrieveData(router.query.id));
     const queryCoursePurchaseStatus = wformat(GET_PURCHASE_STATUS_COURSE_QUERY, {
-        courseId: `${router.query.id}`,
+        courseId: `${thisCourse.id}`,
         customerAddress: `${account}`,
     });
 
@@ -55,29 +61,23 @@ export default function Course() {
 
     return (
         <div>
-            {web3Context && web3Context.isWeb3Enabled ? (
-                web3Context.isChainSupported ? (
-                    <div className="py-10">
-                        {thisCourse ? (
-                            <div className="py-4">
-                                <CourseHeroComponent
-                                    hasOwner={hasBeenPurchased}
-                                    courseItem={thisCourse}
-                                />
-                                <CourseKeypointsComponent points={thisCourse.wsl} />
-                                <CourseLecturesComponent />{" "}
-                            </div>
-                        ) : (
-                            <div>There was an error trying to fetch course</div>
-                        )}
-                    </div>
-                ) : (
-                    <div></div>
-                )
-            ) : (
-                <div className="text-center my-28 text-2xl text-blue-900">
-                    Please connect an account...
+            {web3Context.isChainSupported ? (
+                <div className="py-10">
+                    {thisCourse ? (
+                        <div className="py-4">
+                            <CourseHeroComponent
+                                hasOwner={hasBeenPurchased}
+                                courseItem={thisCourse}
+                            />
+                            <CourseKeypointsComponent points={thisCourse.wsl} />
+                            <CourseLecturesComponent />{" "}
+                        </div>
+                    ) : (
+                        <div>There was an error trying to fetch course</div>
+                    )}
                 </div>
+            ) : (
+                <div></div>
             )}
         </div>
     );

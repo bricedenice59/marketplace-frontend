@@ -75,7 +75,6 @@ export default function Home() {
                     <section className="grid grid-cols-2 gap-6 mb-5">
                         {listCourses.map((_, i) => (
                             <div key={i}>
-                                <div>{listCourses[i].id}</div>
                                 <div className="bg-white rounded-xl shadow-md overflow-hidden md:max-w-3xl">
                                     <CourseListComponent
                                         courseId={listCourses[i].id}

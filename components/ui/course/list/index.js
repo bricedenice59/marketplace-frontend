@@ -1,11 +1,15 @@
-const { getAllCourses } = require("content/courses/fetcher");
 import { CourseStatusComponent } from "@components/ui/course/index";
 import { EthPriceDisplayComponent } from "@components/ui/web3/index";
+import { storeData, deleteData } from "store/course-context";
 import Link from "next/link";
 import Image from "next/image";
 import { imgLoader } from "utils/imgLoader";
-import { useState, useEffect } from "react";
-const allCourses = getAllCourses().data;
+import { useState, useEffect, useRef } from "react";
+const {
+    execSQL,
+    DB_SCHEMA_NAME,
+    TABLE_COURSES,
+} = require("marketplace-shared/lib/database/harperDbUtils");
 
 export default function CourseListComponent({
     courseId,
@@ -14,9 +18,36 @@ export default function CourseListComponent({
     shouldDisplayPrice,
 }) {
     const [course, setCourse] = useState(null);
+    const prevCourseIdRef = useRef();
+
+    const getCourse = async (_courseId) => {
+        const sql = `SELECT *
+        FROM ${DB_SCHEMA_NAME}.${TABLE_COURSES}
+        WHERE id = "${_courseId}"`;
+        const response = await execSQL(sql);
+
+        if (response.error) {
+            console.error(response.error);
+            return null;
+        }
+        var parsedResponse = JSON.parse(response);
+        try {
+            return parsedResponse[0];
+        } catch (error) {
+            return null;
+        }
+    };
+
     useEffect(() => {
-        var thisCourse = allCourses.find((o) => o.id === courseId);
-        setCourse(thisCourse);
+        if (prevCourseIdRef) {
+            deleteData(prevCourseIdRef.current);
+        }
+        prevCourseIdRef.current = courseId;
+        getCourse(courseId).then((_course) => {
+            if (_course != null) {
+                setCourse(_course);
+            }
+        });
     }, [courseId]);
 
     return (
@@ -34,7 +65,12 @@ export default function CourseListComponent({
                             unoptimized="true"
                         />
                     </div>
-                    <div className="p-8">
+                    <div
+                        className="p-8"
+                        onClick={() => {
+                            storeData(course.id, JSON.stringify(course));
+                        }}
+                    >
                         <div className="uppercase tracking-wide text-sm text-indigo-500 font-semibold">
                             {course.type}
                         </div>

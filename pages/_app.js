@@ -5,6 +5,7 @@ import EthPriceContextProvider from "store/price-change-context";
 import { Provider } from "urql";
 import { marketplaceTheGraphClient } from "store/graphql-context";
 import "@styles/globals.css";
+import { CourseContextProvider } from "store/course-context";
 const { setDbConfig } = require("marketplace-shared/lib/database/harperDbUtils");
 
 function MyApp({ Component, pageProps }) {

@@ -43,11 +43,12 @@ export default function CourseHeroComponent({ hasOwner, courseItem }) {
     const purchaseCourse = async () => {
         var tx;
         var gasPrice;
-        if (!web3Context.contracts.marketplaceContract || !web3Context.provider) return;
         const contract = web3Context.contracts.marketplaceContract;
+        if (!contract) return;
+
         setIsProcessing(true);
         try {
-            gasPrice = await web3Context.provider.getGasPrice();
+            gasPrice = await contract.provider.getGasPrice();
         } catch (error) {
             console.log(error);
         }
@@ -104,7 +105,10 @@ export default function CourseHeroComponent({ hasOwner, courseItem }) {
                                 )}
                                 <h1 className="text-4xl tracking-tight font-extrabold text-gray-900 sm:text-5xl md:text-6xl">
                                     <span className="block xl:inline">
-                                        {course.title?.substring(0, course.title.length / 2)}
+                                        {course.title?.substring(
+                                            0,
+                                            course.title.length / 2
+                                        )}
                                     </span>
                                     <span className="block text-indigo-600 xl:inline">
                                         {course.title?.substring(course.title.length / 2)}
@@ -134,7 +138,9 @@ export default function CourseHeroComponent({ hasOwner, courseItem }) {
                                     </div>
                                 ) : (
                                     <div>
-                                        <EthPriceDisplayComponent coursePrice={course.price} />
+                                        <EthPriceDisplayComponent
+                                            coursePrice={course.price}
+                                        />
                                         <button
                                             type="button"
                                             className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm"
